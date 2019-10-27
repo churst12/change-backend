@@ -73,9 +73,9 @@ def create_transfer(make, ID, userID, amount, time, person_to_bank, account_id, 
 #                                              "5102314634", (str(uuid.uuid4()), "88899900", "Bank of America Berkeley", True, True), True)        
 #create_user(conn, "Walmart", "000000000", "Walmart", 10000.00, json.dumps({"lat": "39.125124", "long": "-120.243523", "Address": "1400 Shattuck Avenue Berkeley CA"}), "walmart@gmail.com", \
 #                                               "NA", (str(uuid.uuid4()), "12345678", "Walmart Bank", True, True), True)
-create_transaction(conn, str(uuid.uuid4()), '5e52a2f9-2e37-4699-94c9-165aa38a7271', 'a391ef1f-c9e3-404b-9acb-76387592e61f', "Ikes", \
-                   json.dumps({"lat": "34.536417", "long": "-118.145342", "Address": "1449 Shattuck Avenue Berkeley CA"}), json.dumps({"lat": "37.865259", "long": "-122.251892", "Address": "2514 Piedmont Avenue Berkeley CA"}), \
-                              datetime.now(), False, 0.11, 11.00, "Matt Cain")
+#create_transaction(conn, str(uuid.uuid4()), '5e52a2f9-2e37-4699-94c9-165aa38a7271', 'a391ef1f-c9e3-404b-9acb-76387592e61f', "Ikes", \
+#                   json.dumps({"lat": "34.536417", "long": "-118.145342", "Address": "1449 Shattuck Avenue Berkeley CA"}), json.dumps({"lat": "37.865259", "long": "-122.251892", "Address": "2514 Piedmont Avenue Berkeley CA"}), \
+#                              datetime.now(), False, 0.11, 11.00, "Matt Cain")
 #create_transfer(conn, uuid.uuid4(), 'aee16de7-3dab-4018-87b4-a5041a8963a1', 2.00, datetime.now(), True, str(uuid.uuid4()), "34564379", "Chase")
 firsts = ['Alex', 'Bill', 'James', 'Juan', 'Pierre', 'Barney', 'Homer', 'Jake', 'Billy', 'William', 'Jim', 'Jimmy', 'John', 'Saul', 'Walter', 'Ted', 'Marshall', 'Evan', 'Phil', 'Joaquin', 'Daquan', 'Aaron', 'Adam', 'Collin', 'Lee', 'Tim', 'Matt', 'Timothy', 'Ricky', 'Rick', 'Richard', 'Matthew', 'Matty', 'Deron', 'Derek', 'Darren', 'Ferris', 'Kevin', 'Tod', 'Leigh', 'Abigail', 'Mary', 'Alexandra', 'Robin', 'Lily', 'Cynthia', 'Shayda', 'Stephanie', 'Kiana', 'Sam', 'Samuel', 'Samantha', 'Samantha', 'Annie', 'Beth', 'Bethanie', 'Jiwoon', 'Sheila', 'Ariana', 'Natalie', 'Tiffany', 'Jen', 'Jennnifer', 'Emma', 'Genivieve', 'Lady', 'Paul', 'Paula', 'Selena']
 lasts = ['Smith', 'Denhow', 'Moir', 'Dawson', 'Beth', 'Kross', 'Smulders', 'Starr', 'Ko', 'Li', 'Lee', 'Fisher', 'Francis', 'Huang', 'Hurst', 'Hiroki', 'Edwards', 'Elder', 'Sheeran', 'Grande', 'Lorenzo', 'Bruhn', 'Denero', 'Hilfinger', 'Paulin', 'Romanov', 'Stark', 'Rogers', 'Bunny', 'Duck', 'Orange', 'Arkin', 'Malkovich', 'Stinson', 'Mosby', 'Gomez', 'Toy', 'Merlo', 'Adams', 'Wollstonecraft', 'Daddario', 'Aldrich', 'Aldrin', 'Moir', 'White', 'Hosaka', 'Mozer', 'Toben', 'Runke', 'Rubenstein', 'Goldman', 'Fraser', 'Steiner', 'Huang']
@@ -180,7 +180,7 @@ def get_store_transa(storeID):
         row[9] = str(row[9])
         newrows.append(row)
     return json.dumps(newrows)
-#print(get_user('5e52a2f9-2e37-4699-94c9-165aa38a7271'))
+print(get_user('5e52a2f9-2e37-4699-94c9-165aa38a7271'))
 #print(get_account('0d1986e1-4fdf-479d-bedb-6412975a09c4'))
 #print(get_transa('aee16de7-3dab-4018-87b4-a5041a8963a1'))
 #print(get_transf('11f51d1a-bb61-4080-9e34-b54da97ad5b3'))
@@ -263,15 +263,15 @@ def hello_world():
 #Get all transactions for a user.
 @app.route('/get/transactions/user')
 def get_user_transall():
-    form = request.form
-    s = get_user_transa(form['userID'])
+    user_id = request.args.get('userID')
+    s = get_user_transa(user_id)
     return s
 
 #Get all transactions for a store.
 @app.route('/get/transactions/store')
 def get_store_transall():
-    form = request.form
-    s = get_store_transa(form['storeID'])
+    store_id = request.args.get('storeID')
+    s = get_store_transa(store_id)
     return s
 
 #Get all transactions for god mode.
@@ -283,19 +283,19 @@ def get_transall():
 #Get profile for a user.
 @app.route('/get/user/profile')
 def get_user_profile():
-    form = request.form
-    s = get_user(form['userID'])
+    user_id = request.args.get('userID')
+    s = get_user(user_id)
     return s
 
 #Get profile for a user.
 @app.route('/get/user/bankaccount')
 def get_user_bank_account():
-    form = request.form
-    s = get_account_user(form['userID'])
+    user_id = request.args.get('userID')
+    s = get_account_user(user_id)
     return s
 
 # create a transaction post method 
-@app.route('/post', methods=['POST'])
+@app.route('/do/transaction', methods=['POST'])
 def real_post():
     s = request.form
     create_transaction(conn, s['storeID'], s['store_name'], s['store_loc'], s['user_loc'], datetime.datetime(), s['store_to_person'], s['change_amount'], s['cash_amount'], s['receipt'])
