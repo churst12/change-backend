@@ -1,5 +1,5 @@
 import psycopg2
-from flask import Flask
+from flask import Flask, request
 import math
 import numpy as np
 import uuid
@@ -39,8 +39,9 @@ def create_user(make, username, password, name, balance, location, email, phone,
         account_info_json = json.dumps({"id":account_info[0]})
         cur.execute("INSERT INTO users values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (username, password, name, balance, location, email, phone, account_info_json, userID, sub_1))
 
-def create_transaction(make, ID, userID, storeID, store_name, store_loc, user_loc, time, store_to_person, change_amount, cash_amount, receipt):
+def create_transaction(make, userID, storeID, store_name, store_loc, user_loc, time, store_to_person, change_amount, cash_amount, receipt):
     with make.cursor() as cur:
+        ID = str(uuid.uuid4())
         cur.execute("INSERT INTO transactions values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (ID, userID, storeID, store_name, store_loc, user_loc, store_to_person, cash_amount, change_amount, time, receipt))
         if store_to_person:
             cur.execute("UPDATE users SET balance = balance + %s WHERE id = %s", (change_amount, str(userID)))
@@ -248,17 +249,57 @@ def displaytransas():
 #print(displayusers())
 #print(displayaccs())
 #print(displaytransfs())
-print(displaytransas())
+#print(displaytransas())
 
 
 
-"""#booty
+#booty
 app = Flask(__name__)
 @app.route('/')
 def hello_world():
 	s = displayusers()
-
 	return s
 
+#Get all transactions for a user.
+@app.route('/get/transactions/user')
+def get_user_transall():
+    form = request.form
+    s = get_user_transa(form['userID'])
+    return s
+
+#Get all transactions for a store.
+@app.route('/get/transactions/store')
+def get_store_transall():
+    form = request.form
+    s = get_store_transa(form['storeID'])
+    return s
+
+#Get all transactions for god mode.
+@app.route('/get/transactions')
+def get_transall():
+    s = displaytransas()
+    return s
+
+#Get profile for a user.
+@app.route('/get/user/profile')
+def get_user_profile():
+    form = request.form
+    s = get_user(form['userID'])
+    return s
+
+#Get profile for a user.
+@app.route('/get/user/bankaccount')
+def get_user_bank_account():
+    form = request.form
+    s = get_account_user(form['userID'])
+    return s
+
+# create a transaction post method 
+@app.route('/post', methods=['POST'])
+def real_post():
+    s = request.form
+    create_transaction(conn, s['storeID'], s['store_name'], s['store_loc'], s['user_loc'], datetime.datetime(), s['store_to_person'], s['change_amount'], s['cash_amount'], s['receipt'])
+    return "success"
+
 if __name__ == '__main__':
-	app.run()"""
+	app.run()
