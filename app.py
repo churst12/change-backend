@@ -1,5 +1,6 @@
 import psycopg2
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 import math
 import numpy as np
 import uuid
@@ -255,13 +256,17 @@ def displaytransas():
 
 #booty
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route('/')
+@cross_origin()
 def hello_world():
 	s = displayusers()
 	return s
 
 #Get all transactions for a user.
 @app.route('/get/transactions/user')
+@cross_origin()
 def get_user_transall():
     user_id = request.args.get('userID')
     s = get_user_transa(user_id)
@@ -269,6 +274,7 @@ def get_user_transall():
 
 #Get all transactions for a store.
 @app.route('/get/transactions/store')
+@cross_origin()
 def get_store_transall():
     store_id = request.args.get('storeID')
     s = get_store_transa(store_id)
@@ -276,12 +282,14 @@ def get_store_transall():
 
 #Get all transactions for god mode.
 @app.route('/get/transactions')
+@cross_origin()
 def get_transall():
     s = displaytransas()
     return s
 
 #Get profile for a user.
 @app.route('/get/user/profile')
+@cross_origin()
 def get_user_profile():
     user_id = request.args.get('userID')
     s = get_user(user_id)
@@ -289,6 +297,7 @@ def get_user_profile():
 
 #Get profile for a user.
 @app.route('/get/user/bankaccount')
+@cross_origin()
 def get_user_bank_account():
     user_id = request.args.get('userID')
     s = get_account_user(user_id)
@@ -296,6 +305,7 @@ def get_user_bank_account():
 
 # create a transaction post method 
 @app.route('/do/transaction', methods=['POST'])
+@cross_origin()
 def real_post():
     s = request.form
     create_transaction(conn, s['storeID'], s['store_name'], s['store_loc'], s['user_loc'], datetime.datetime(), s['store_to_person'], s['change_amount'], s['cash_amount'], s['receipt'])
