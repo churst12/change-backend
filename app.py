@@ -181,7 +181,7 @@ def get_store_transa(storeID):
         row[9] = str(row[9])
         newrows.append(row)
     return json.dumps(newrows)
-print(get_user('5e52a2f9-2e37-4699-94c9-165aa38a7271'))
+#  print(get_user('5e52a2f9-2e37-4699-94c9-165aa38a7271'))
 #print(get_account('0d1986e1-4fdf-479d-bedb-6412975a09c4'))
 #print(get_transa('aee16de7-3dab-4018-87b4-a5041a8963a1'))
 #print(get_transf('11f51d1a-bb61-4080-9e34-b54da97ad5b3'))
@@ -307,8 +307,8 @@ def get_user_bank_account():
 @app.route('/do/transaction', methods=['POST'])
 @cross_origin()
 def real_post():
-    s = request.form
-    create_transaction(conn, s['storeID'], s['store_name'], s['store_loc'], s['user_loc'], datetime.datetime(), s['store_to_person'], s['change_amount'], s['cash_amount'], s['receipt'])
+    s = request.json
+    create_transaction(conn, s['userID'], s['storeID'], s['store_name'], s['store_loc'], s['user_loc'], datetime.now(), s['store_to_person'], s['change_amount'], s['cash_amount'], s['receipt'])
     return "success"
 
 if __name__ == '__main__':
